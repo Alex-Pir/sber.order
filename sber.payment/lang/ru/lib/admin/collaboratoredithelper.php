@@ -1,0 +1,3 @@
+<?php
+$MESS['DIGITALWAND_ADMIN_HELPER_NEW_ELEMENT'] = 'Новый сотрудник';
+$MESS['DIGITALWAND_ADMIN_HELPER_EDIT_TITLE'] = 'Сотрудник #ID#';
