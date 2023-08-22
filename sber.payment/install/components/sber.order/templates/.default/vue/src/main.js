@@ -10,18 +10,17 @@ export let OrderPaymentForm = {
             price: 0,
             errors: [],
             isOrderCreated: false,
-            orderId: 0,
-            orderCreateUrl: 'sber:payment.order.ordercontroller.'
+            orderUrl: 'sber:payment.order.ordercontroller.'
         }
     },
     methods: {
         preparePrice() {
-            for (const index in this.PRODUCTS) {
-                if (this.PRODUCTS[index].ID !== this.productId) {
+            for (const index in this.products) {
+                if (this.products[index].ID !== this.productId) {
                     continue;
                 }
 
-                this.price = this.PRODUCTS[index].ORIGINAL_PRICE * this.amount;
+                this.price = this.products[index].ORIGINAL_PRICE * this.amount;
             }
         },
         createOrder() {
@@ -34,12 +33,31 @@ export let OrderPaymentForm = {
             formSendAll.append('amount', this.amount);
 
             this.$request
-                .setUrl(this.orderCreateUrl + 'create')
+                .setUrl(this.orderUrl + 'create')
                 .setData(formSendAll)
                 .send()
                 .then(response => {
                     this.isOrderCreated = true;
                     this.orderId = response.order_id;
+                    this.errors = [];
+                })
+                .catch(error => {
+                    this.errors = [];
+                    this.errors.push(error);
+                });
+        },
+        registerOrder() {
+            let formSendAll = new FormData();
+
+            formSendAll.append('order_id', this.orderId);
+
+            this.$request
+                .setUrl(this.orderUrl + 'pay')
+                .setData(formSendAll)
+                .send()
+                .then(response => {
+                    this.errors = [];
+                    location.href = response;
                 })
                 .catch(error => {
                     this.errors = [];

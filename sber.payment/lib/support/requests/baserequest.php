@@ -7,6 +7,7 @@ use Sber\Payment\Contracts\ValidatorContract;
 use Sber\Payment\Support\Requests\Validators\GreaterThenOrEqualsValidator;
 use Sber\Payment\Support\Requests\Validators\RegValidator;
 use Sber\Payment\Support\Requests\Validators\RequiredValidator;
+use Sber\Payment\Support\Requests\Validators\TableExistValidator;
 use Sber\Payment\Support\Requests\Validators\TypeValidator;
 
 abstract class BaseRequest
@@ -45,6 +46,7 @@ abstract class BaseRequest
             RequiredValidator::key() => RequiredValidator::class,
             TypeValidator::key() => TypeValidator::class,
             GreaterThenOrEqualsValidator::key() => GreaterThenOrEqualsValidator::class,
+            TableExistValidator::key() => TableExistValidator::class,
         ];
     }
 

@@ -12,9 +12,11 @@ interface PaymentGatewayContract
 
     public function register(): mixed;
 
-    public function pay(): array;
+    public function state(): array;
 
     public function isPaid(): bool;
 
     public function url(): string;
+
+    public function errorMessage(int $code): string;
 }

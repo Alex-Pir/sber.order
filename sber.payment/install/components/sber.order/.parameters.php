@@ -13,5 +13,11 @@ Loader::includeModule('polus.collaborator');
 
 $arComponentParameters = [
     'PARAMETERS' => [
+        'SBER_ORDER_ORDER_ID' => [
+            'PARENT' => 'BASE',
+            'NAME' => Loc::getMessage('SBER_ORDER_ORDER_ID'),
+            'TYPE' => 'INTEGER'
+        ],
+        'CACHE_TIME' => ['DEFAULT' => 36000000]
     ]
 ];

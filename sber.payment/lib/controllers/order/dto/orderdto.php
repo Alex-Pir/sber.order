@@ -32,14 +32,16 @@ class OrderDto
             $product = (new ProductRepository())->getById($fields['product_id']);
         }
 
+        $amount = $fields['amount'] ?? 0;
+
         return static::make(
             $fields['order_id'] ?? '',
             $fields['user_last_name'] ?? '',
-            $fields['user_second_name'] ?? '',
             $fields['user_name'] ?? '',
+            $fields['user_second_name'] ?? '',
             $fields['product_id'] ?? 0,
-            $fields['amount'] ?? 0,
-            $product['ORIGINAL_PRICE'] ?? 0,
+            $amount,
+            isset($product['ORIGINAL_PRICE']) ? ($product['ORIGINAL_PRICE'] * $amount) : 0,
             $fields['status'] ?? OrderStatuses::New->value,
         );
     }

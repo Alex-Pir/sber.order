@@ -2,17 +2,25 @@
 
 namespace Sber\Payment\Payment\Gateway;
 
-use Bitrix\Main\ArgumentException;
 use Bitrix\Main\Web\HttpClient;
 use Bitrix\Main\Web\Json;
 use Sber\Payment\Constants;
 use Sber\Payment\Contracts\PaymentGatewayContract;
+use Sber\Payment\Exceptions\PaymentException;
 use Sber\Payment\Payment\PaymentData;
-use Sber\Payment\Support\Traits\HasModuleOption;
+use Sber\Payment\Support\Traits\HasModuleOptions;
 
 class SberGateway implements PaymentGatewayContract
 {
-    use HasModuleOption;
+    use HasModuleOptions;
+
+    protected array $errorMessages = [
+        1 => 'Неверный номер заказа',
+        3 => 'Неизвестная валюта',
+        4 => 'Проверьте правильность заполнения параметров заказа',
+        5 => 'Доступ запрещён',
+        7 => 'Системная ошибка',
+    ];
 
     protected const PAY_STATUS_SUCCESS = 2;
 
@@ -45,7 +53,7 @@ class SberGateway implements PaymentGatewayContract
     }
 
     /**
-     * @throws ArgumentException
+     * @throws PaymentException
      */
     public function register(): string
     {
@@ -55,16 +63,25 @@ class SberGateway implements PaymentGatewayContract
             'userName' => static::getModuleOption(Constants::LOGIN_SETTINGS),
             'password' => static::getModuleOption(Constants::PASSWORD_SETTINGS),
             'orderNumber' => $this->paymentData->id,
-            'returnUrl' => static::getModuleOption(Constants::URL_SETTINGS),
+            'returnUrl' => static::getModuleOption(Constants::URL_RETURN_SETTINGS),
             'amount' => $this->paymentData->price->current(),
             'currency' => $config['ISO'][$this->paymentData->price->currency()],
             'params' => json_encode(array('formUrl' => ''))
         ];
 
-        return $this->sendRequest('register.do', $parameters)['formUrl'];
+        $response = $this->sendRequest('register.do', $parameters);
+
+        if (isset($response['errorCode'])) {
+            PaymentException::throw($this->errorMessage((int)$response['errorCode']));
+        }
+
+        return $response['formUrl'];
     }
 
-    public function pay(): array
+    /**
+     * @throws PaymentException
+     */
+    public function state(): array
     {
         $parameters = [
             'userName' => static::getModuleOption(Constants::LOGIN_SETTINGS),
@@ -73,6 +90,11 @@ class SberGateway implements PaymentGatewayContract
         ];
 
         $response = $this->sendRequest('getOrderStatusExtended.do', $parameters);
+
+        if (isset($response['errorCode'])) {
+            PaymentException::throw($this->errorMessage((int)$response['errorCode']));
+        }
+
         $this->isPaid = $response['orderStatus'] == static::PAY_STATUS_SUCCESS;
 
         return $response;
@@ -92,9 +114,21 @@ class SberGateway implements PaymentGatewayContract
         return $this->isPaid;
     }
 
+    public function errorMessage(int $code): string
+    {
+        if (!isset($this->errorMessages[$code])) {
+            return 'Неизвестная ошибка';
+        }
+
+        return $this->errorMessages[$code];
+    }
+
     protected function sendRequest(string $method, array $parameters): array
     {
         $http = new HttpClient();
+
+        $http->setCharset('utf-8');
+        $http->disableSslVerification();
         $http->post($this->url() . $method, $parameters);
 
         return Json::decode($http->getResult());

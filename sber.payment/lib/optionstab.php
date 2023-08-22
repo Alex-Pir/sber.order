@@ -2,8 +2,8 @@
 
 namespace Sber\Payment;
 
-use Polus\Elastic\Entity\OptionTable;
 use Polus\Options\Tab;
+use Sber\Payment\Entity\OptionTable;
 
 class OptionsTab extends Tab
 {

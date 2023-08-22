@@ -3,8 +3,8 @@ const babelMinify = require('rollup-plugin-babel-minify');
 
 module.exports = {
 	input: './src/main.js',
-	output: '../script.js',
-	namespace: 'BX.Polus.Components',
+	output: './dist/main.bundle.js',
+	namespace: 'BX.Polus.Plugins.Notification',
 	plugins: {
 		resolve: true,
 		custom: [

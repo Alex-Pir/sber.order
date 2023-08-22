@@ -2,6 +2,8 @@
 
 namespace Sber\Payment\Entity;
 
+use Bitrix\Main\Application;
+use Bitrix\Main\DB\SqlQueryException;
 use Bitrix\Main\Entity\Event;
 use Bitrix\Main\Entity\EventResult;
 use Bitrix\Main\Entity\ReferenceField;
@@ -12,9 +14,7 @@ use Bitrix\Main\ORM\Fields\DatetimeField;
 use Bitrix\Main\ORM\Fields\IntegerField;
 use Bitrix\Main\ORM\Fields\StringField;
 use Bitrix\Main\Type\DateTime;
-use Bitrix\UI\NotificationManager\Helpers\Uuid;
 use Exception;
-use Sber\Payment\Entity\Fields\PriceField;
 use Sber\Payment\ValueObjects\Price;
 
 Loc::loadMessages(__FILE__);
@@ -32,6 +32,8 @@ class OrderTable extends DataManager
     public const STATUS = 'STATUS';
     public const DATE_CREATE = 'DATE_CREATE';
     public const DATE_UPDATE = 'DATE_UPDATE';
+
+    protected const NAME_VALIDATOR_REG = '/[^a-zа-яё]/ui';
 
     public static function getTableName(): string
     {
@@ -108,6 +110,18 @@ class OrderTable extends DataManager
             $modifiedFields[static::PRICE] = $fields[static::PRICE] <= 0 ? 0 : Price::make($fields[static::PRICE])->raw();
         }
 
+        if (isset($fields[static::USER_LAST_NAME])) {
+            $modifiedFields[static::USER_LAST_NAME] = static::prepareNameField($fields[static::USER_LAST_NAME]);
+        }
+
+        if (isset($fields[static::USER_NAME])) {
+            $modifiedFields[static::USER_NAME] = static::prepareNameField($fields[static::USER_NAME]);
+        }
+
+        if (isset($fields[static::USER_SECOND_NAME])) {
+            $modifiedFields[static::USER_SECOND_NAME] = static::prepareNameField($fields[static::USER_SECOND_NAME]);
+        }
+
         if ($type === static::EVENT_ON_BEFORE_ADD) {
             $modifiedFields[static::ORDER_ID] = static::uuid();
         }
@@ -125,6 +139,45 @@ class OrderTable extends DataManager
                 ''
             )
         ];
+    }
+
+    public static function createIndexes(): void
+    {
+
+        $fields = static::getIndexFields();
+
+        if (empty($fields)) {
+            return;
+        }
+
+        $connection = Application::getConnection();
+
+        try {
+
+            foreach ($fields as $field) {
+
+                $connection->createIndex(
+                    static::getTableName(),
+                    implode("_", ["IX", static::getTableName(), $field]),
+                    $field
+                );
+
+            }
+
+        } catch (SqlQueryException $ex) {
+            AddMessage2Log($ex->getMessage());
+        }
+    }
+
+    protected static function getIndexFields(): array {
+        return [
+            static::ORDER_ID
+        ];
+    }
+
+    protected static function prepareNameField(string $field): string
+    {
+        return preg_replace(static::NAME_VALIDATOR_REG, '', $field);
     }
 
     /**

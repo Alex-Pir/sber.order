@@ -10,7 +10,7 @@ use Exception;
 
 Loc::loadMessages(__FILE__);
 
-trait HasModuleOption
+trait HasModuleOptions
 {
     public static function getAllModuleOptions(): array
     {

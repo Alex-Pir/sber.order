@@ -14,15 +14,30 @@ Loc::loadMessages(__FILE__);
 class SberPayment extends CBitrixComponent
 {
     protected const SBER_PAYMENT_MODULE = 'sber.payment';
-    
+
+    public function onPrepareComponentParams($arParams): array {
+        $arParams['SBER_ORDER_ORDER_ID'] = is_numeric($arParams['SBER_ORDER_ORDER_ID']) && $arParams['SBER_ORDER_ORDER_ID'] > 0
+            ? $arParams['SBER_ORDER_ORDER_ID']
+            : 0;
+
+        $arParams['CACHE_TIME'] = $arParams['CACHE_TYPE'] !== 'N' ? $arParams['CACHE_TIME'] : 0;
+
+        if (!$arParams['CACHE_TIME']) {
+            $arParams['CACHE_TIME'] = 0;
+        }
+
+        return $arParams;
+    }
+
     /**
      * @throws LoaderException
      */
-    public function executeComponent()
+    public function executeComponent(): void
     {
         $this->includeModule();
 
-        $this->arResult['PRODUCTS'] = (new ProductRepository())->getList([]);
+        $this->arResult['orderId'] = $this->arParams['SBER_ORDER_ORDER_ID'] ?? 0;
+        $this->arResult['products'] = (new ProductRepository())->getList([]);
 
         $this->includeComponentTemplate();
     }

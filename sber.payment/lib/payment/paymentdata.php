@@ -8,7 +8,7 @@ final class PaymentData
 {
     public function __construct(
         public string $id,
-        public Price $price,
+        public ?Price $price = null,
     ) {
     }
 }

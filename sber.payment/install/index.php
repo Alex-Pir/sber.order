@@ -153,6 +153,7 @@ class SBER_PAYMENT extends CModule
 	public function installFiles(): void
 	{
         CopyDirFiles(__DIR__ . '/components', Main\Application::getDocumentRoot() . SBER_PAYMENT_BX_ROOT . '/components/' . SBER_PAYMENT_MODULE, true, true);
+        CopyDirFiles(__DIR__ . '/js', Main\Application::getDocumentRoot() . '/local/js', true, true);
 	}
 
 	/**
@@ -161,6 +162,7 @@ class SBER_PAYMENT extends CModule
 	public function uninstallFiles(): void
 	{
 		DeleteDirFilesEx(SBER_PAYMENT_BX_ROOT . '/components/' . SBER_PAYMENT_MODULE);
+		DeleteDirFilesEx(SBER_PAYMENT_BX_ROOT . '/js/polus/');
 	}
 
 

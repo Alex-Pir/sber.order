@@ -91,6 +91,10 @@ class TableManager
         if (!$connection->isTableExists($instance::getTableName())) {
             $entity = $instance::getEntity();
             $entity->createDbTable();
+
+            if (method_exists($instance, 'createIndexes')) {
+                $instance::createIndexes();
+            }
         }
     }
 
