@@ -3,7 +3,7 @@
 namespace Sber\Payment\Controllers\Order\Dto;
 
 use Sber\Payment\Entity\OrderTable;
-use Sber\Payment\enums\OrderStatuses;
+use Sber\Payment\Enums\OrderStatuses;
 use Sber\Payment\Repositories\ProductRepository;
 use Sber\Payment\Support\Traits\Makeable;
 use Sber\Payment\ValueObjects\Price;
