@@ -2,6 +2,10 @@
 
 namespace Sber\Payment\States;
 
+use Bitrix\Main\Localization\Loc;
+
+Loc::loadMessages(__FILE__);
+
 class CancelledOrderState extends OrderState
 {
     protected array $allowedTransitions = [
@@ -20,7 +24,7 @@ class CancelledOrderState extends OrderState
 
     public function humanValue(): string
     {
-        return 'Отменен';
+        return Loc::getMessage('SBER_ORDER_STATE_CANCELLED');
     }
 
     public function canPay(): bool

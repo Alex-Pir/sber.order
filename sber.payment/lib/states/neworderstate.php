@@ -2,6 +2,10 @@
 
 namespace Sber\Payment\States;
 
+use Bitrix\Main\Localization\Loc;
+
+Loc::loadMessages(__FILE__);
+
 class NewOrderState extends OrderState
 {
     protected array $allowedTransitions = [
@@ -21,7 +25,7 @@ class NewOrderState extends OrderState
 
     public function humanValue(): string
     {
-        return 'Новый заказ';
+        return Loc::getMessage('SBER_ORDER_STATE_NEW');
     }
 
     public function canPay(): bool

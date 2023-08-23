@@ -9,8 +9,10 @@ use Bitrix\Main\Error;
 use Exception;
 use Sber\Payment\Controllers\Order\Actions\CreateOrderAction;
 use Sber\Payment\Controllers\Order\Actions\OrderPayAction;
+use Sber\Payment\Controllers\Order\Actions\UpdateOrderAction;
 use Sber\Payment\Controllers\Order\Requests\OrderCreateRequest;
 use Sber\Payment\Controllers\Order\Requests\OrderPayRequest;
+use Sber\Payment\Entity\OrderTable;
 
 class OrderController extends Controller
 {
@@ -44,12 +46,16 @@ class OrderController extends Controller
         return null;
     }
 
-    public function payAction(): string|null
+    public function payAction(): array|null
     {
         try {
-            return (new OrderPayAction())->execute(
-                (new OrderPayRequest($this->request))->getDto()
-            );
+            $orderDto = (new OrderPayRequest($this->request))->getDto();
+
+            $link = (new OrderPayAction())->execute($orderDto);
+
+            (new UpdateOrderAction())->execute($orderDto->id, [OrderTable::PAYMENT_LINK => $link]);
+
+            return ['payment_link' => $link];
         } catch (Exception $ex) {
             $this->addError(new Error($ex->getMessage(), $ex->getCode()));
         }

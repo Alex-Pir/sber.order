@@ -13,6 +13,7 @@ class OrderDto
     use Makeable;
 
     public function __construct(
+        public readonly int $id,
         public readonly string $orderId,
         public readonly string $userLastName,
         public readonly string $userName,
@@ -35,6 +36,7 @@ class OrderDto
         $amount = $fields['amount'] ?? 0;
 
         return static::make(
+            $fields['id'] ?? 0,
             $fields['order_id'] ?? '',
             $fields['user_last_name'] ?? '',
             $fields['user_name'] ?? '',
@@ -49,6 +51,7 @@ class OrderDto
     public static function fromDbArray(array $fields): self
     {
         return static::make(
+            $fields[OrderTable::ID] ?? 0,
             $fields[OrderTable::ORDER_ID] ?? '',
             $fields[OrderTable::USER_LAST_NAME] ?? '',
             $fields[OrderTable::USER_NAME] ?? '',

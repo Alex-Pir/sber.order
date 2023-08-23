@@ -2,8 +2,12 @@
 
 namespace Sber\Payment\States;
 
+use Bitrix\Main\Localization\Loc;
+use Exception;
 use InvalidArgumentException;
 use Sber\Payment\Entity\OrderTable;
+
+Loc::loadMessages(__FILE__);
 
 abstract class OrderState
 {
@@ -22,17 +26,23 @@ abstract class OrderState
 
     abstract public function canPay(): bool;
 
+    /**
+     * @throws Exception
+     */
     public function transitionTo(OrderState $state): void
     {
         if (!$this->canBeChanged()) {
             throw new InvalidArgumentException(
-                'Status can`t be changed'
+                Loc::getMessage('SBER_ORDER_STATUS_ERROR')
             );
         }
 
         if (!in_array(get_class($state), $this->allowedTransitions)) {
             throw new InvalidArgumentException(
-                "No transition for order {$this->orderId} to {$state->value()}"
+                Loc::getMessage('SBER_ORDER_STATUS_TRANSITION_ERROR', [
+                    '#ORDER_ID#' => $this->orderId,
+                    '#STATE#' => $state->value()
+                ])
             );
         }
 

@@ -2,6 +2,10 @@
 
 namespace Sber\Payment\States;
 
+use Bitrix\Main\Localization\Loc;
+
+Loc::loadMessages(__FILE__);
+
 class PendingOrderState extends OrderState
 {
     protected array $allowedTransitions = [
@@ -21,7 +25,7 @@ class PendingOrderState extends OrderState
 
     public function humanValue(): string
     {
-        return 'В обработке';
+        return Loc::getMessage('SBER_ORDER_STATUS_PENDING');
     }
 
     public function canPay(): bool

@@ -1,4 +1,5 @@
 <?php
+
 namespace Sber\Payment\Entity;
 
 use Bitrix\Main\ORM\Data\DataManager;
@@ -46,11 +47,6 @@ class OptionTable extends DataManager
         ];
     }
 
-    /**
-     * Returns validators for MODULE_ID field.
-     *
-     * @return array
-     */
     public static function validateModuleId(): array
     {
         return [
@@ -58,11 +54,6 @@ class OptionTable extends DataManager
         ];
     }
 
-    /**
-     * Returns validators for NAME field.
-     *
-     * @return array
-     */
     public static function validateName(): array
     {
         return [
@@ -70,11 +61,6 @@ class OptionTable extends DataManager
         ];
     }
 
-    /**
-     * Returns validators for DESCRIPTION field.
-     *
-     * @return array
-     */
     public static function validateDescription(): array
     {
         return [

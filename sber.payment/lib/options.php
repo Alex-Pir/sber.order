@@ -41,7 +41,6 @@ class Options
         $tab->addField(new StringField(Constants::LOGIN_SETTINGS, Loc::getMessage('SBER_PAYMENT_LOGIN')));
         $tab->addField(new PasswordField(Constants::PASSWORD_SETTINGS, Loc::getMessage('SBER_PAYMENT_PASSWORD')));
         $tab->addField(new StringField(Constants::URL_RETURN_SETTINGS, Loc::getMessage('SBER_PAYMENT_URL_RETURN')));
-        $tab->addField(new StringField(Constants::URL_PAY_SETTINGS, Loc::getMessage('SBER_PAYMENT_URL_PAY')));
         $tab->addField(new CheckboxField(Constants::IS_TEST_SETTINGS, Loc::getMessage('SBER_PAYMENT_IS_TEST')));
 
         return $tab;

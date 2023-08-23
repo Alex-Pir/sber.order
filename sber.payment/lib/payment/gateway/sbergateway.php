@@ -2,6 +2,7 @@
 
 namespace Sber\Payment\Payment\Gateway;
 
+use Bitrix\Main\Localization\Loc;
 use Bitrix\Main\Web\HttpClient;
 use Bitrix\Main\Web\Json;
 use Sber\Payment\Constants;
@@ -10,17 +11,13 @@ use Sber\Payment\Exceptions\PaymentException;
 use Sber\Payment\Payment\PaymentData;
 use Sber\Payment\Support\Traits\HasModuleOptions;
 
+Loc::loadMessages(__FILE__);
+
 class SberGateway implements PaymentGatewayContract
 {
     use HasModuleOptions;
 
-    protected array $errorMessages = [
-        1 => 'Неверный номер заказа',
-        3 => 'Неизвестная валюта',
-        4 => 'Проверьте правильность заполнения параметров заказа',
-        5 => 'Доступ запрещён',
-        7 => 'Системная ошибка',
-    ];
+    protected array $errorMessages;
 
     protected const PAY_STATUS_SUCCESS = 2;
 
@@ -29,6 +26,17 @@ class SberGateway implements PaymentGatewayContract
     protected PaymentData $paymentData;
 
     protected bool $isPaid = false;
+
+    public function __construct()
+    {
+        $this->errorMessages = [
+            1 => Loc::getMessage('SBER_ORDER_ERROR_1'),
+            3 => Loc::getMessage('SBER_ORDER_ERROR_3'),
+            4 => Loc::getMessage('SBER_ORDER_ERROR_4'),
+            5 => Loc::getMessage('SBER_ORDER_ERROR_5'),
+            7 => Loc::getMessage('SBER_ORDER_ERROR_7'),
+        ];
+    }
 
     public function configure(): array
     {
@@ -117,7 +125,7 @@ class SberGateway implements PaymentGatewayContract
     public function errorMessage(int $code): string
     {
         if (!isset($this->errorMessages[$code])) {
-            return 'Неизвестная ошибка';
+            return Loc::getMessage('SBER_ORDER_ERROR_UNKNOWN');
         }
 
         return $this->errorMessages[$code];

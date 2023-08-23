@@ -8,7 +8,6 @@ export class VueInit {
     }
 
     initData(params) {
-    console.log(params);
         let oldData = this.component.data();
 
         params = Object.assign({}, params, oldData);
@@ -16,8 +15,6 @@ export class VueInit {
         this.component.data = function() {
             return params;
         }
-
-        console.log(this.component.data);
     }
 
     init() {

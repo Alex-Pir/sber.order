@@ -33,19 +33,16 @@ class ProductTable extends DataManager
                 'autocomplete' => true,
             ]),
             new StringField(static::NAME, [
-                'title' => Loc::getMessage('SBER_PAYMENT_TABLE_USER_NAME'),
                 'required' => true,
             ]),
             new IntegerField(static::PRICE, [
                 'required' => true,
             ]),
             new DatetimeField(static::DATE_CREATE, [
-                'title' => Loc::getMessage('SBER_PAYMENT_TABLE_DATE_CREATE'),
                 'required' => true,
                 'default_value' => fn() => new DateTime()
             ]),
             new DatetimeField(static::DATE_UPDATE, [
-                'title' => Loc::getMessage('SBER_PAYMENT_TABLE_DATE_UPDATE'),
                 'required' => true
             ]),
         ];

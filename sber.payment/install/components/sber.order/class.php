@@ -37,7 +37,7 @@ class SberPayment extends CBitrixComponent
         $this->includeModule();
 
         $this->arResult['orderId'] = $this->arParams['SBER_ORDER_ORDER_ID'] ?? 0;
-        $this->arResult['products'] = (new ProductRepository())->getList([]);
+        $this->arResult['products'] = (new ProductRepository())->getList(['cache' => ['ttl' => $this->arParams['CACHE_TIME']]]);
 
         $this->includeComponentTemplate();
     }
