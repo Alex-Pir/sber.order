@@ -1,0 +1,3 @@
+<?php
+$MESS['SBER_ORDER_ORDER_CREATE_BUTTON'] = 'Заказать';
+$MESS['SBER_ORDER_ORDER_PAY_BUTTON'] = 'Оплатить';

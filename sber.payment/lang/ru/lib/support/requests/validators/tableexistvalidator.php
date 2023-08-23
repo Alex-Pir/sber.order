@@ -1,0 +1,2 @@
+<?php
+$MESS['SBER_ORDER_TABLE_EXIST_VALIDATOR_ERROR'] = 'Некорректный класс #PARAMETER#';
